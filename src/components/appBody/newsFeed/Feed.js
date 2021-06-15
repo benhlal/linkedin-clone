@@ -1,24 +1,58 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import './Feed.css';
 import CreateIcon from '@material-ui/icons/Create';
 import InputOption from "./inputOption/InputOption";
-import {CalendarViewDayOutlined, ImageOutlined, SubscriptionsOutlined} from "@material-ui/icons";
+import {CalendarViewDayOutlined, SubscriptionsOutlined} from "@material-ui/icons";
 import colors from '../../../../src/configs/colors.json'
 import SubscriptionsIcon from '@material-ui/icons/Subscriptions';
 import ImageIcon from '@material-ui/icons/Image';
 import Post from "./posts/Post";
+import {db} from "../../../firebase";
+import firebase from "firebase";
+
 
 function Feed(props) {
 
     const colorObject = colors.postsIconsColors;
+    const [input, setInput] = useState('');
+    const [posts, setPosts] = useState([]);
+
+
+    useEffect(() => {
+        db.collection("posts").orderBy('timeStamp', 'desc').onSnapshot(
+            snapshot => (
+                setPosts(snapshot.docs.map(
+                    (doc) => (
+                        {
+                            id: doc.id,
+                            data: doc.data(),
+                        }
+                    )
+                ))
+            ))
+
+    }, [])
+
+    const sendPost = (e) => {
+        e.preventDefault();
+        db.collection('posts').add(
+            {
+                name: 'BENHLAL Yassine',
+                description: 'This is a clone',
+                message: input,
+                photoUrl: '',
+                timeStamp: firebase.firestore.FieldValue.serverTimestamp()
+            }
+        ).then(r => (''))
+    }
     return (
         <div className="feed">
             <div className="feed__inputContainer">
                 <div className="feed__input">
                     <CreateIcon/>
                     <form>
-                        <input type={'text'}/>
-                        <button type={'submit'}>Send</button>
+                        <input type={'text'} onChange={event => setInput(event.target.value)}/>
+                        <button type={'submit'} onClick={sendPost}>Send</button>
                     </form>
                 </div>
 
@@ -31,12 +65,25 @@ function Feed(props) {
             </div>
 
             {/* POSTS*/}
-            <Post
-                name={'BENHLAL Youness'}
-                description={'this is a description'}
-                message={'wow this is working'}
-                photoUrl={''}
-            />
+            {
+                posts.map(
+                    ({
+                         id, data:
+                            {
+                                name,
+                                description,
+                                message,
+                                photoUrl
+                            }
+                     }) => (<Post
+                        key={id}
+                        name={name}
+                        description={description}
+                        message={message}
+                        photoUrl={photoUrl}
+                    />))
+            }
+
 
         </div>
     );

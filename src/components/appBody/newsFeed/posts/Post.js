@@ -6,8 +6,6 @@ import {CommentOutlined, SendOutlined, ShareOutlined, ThumbUpAltOutlined} from "
 import colors from '../../../../../src/configs/colors.json'
 
 function Post({name, description, message, photoUrl}) {
-
-
     return (
         <div className={'post'}>
 
