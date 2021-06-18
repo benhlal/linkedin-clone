@@ -3,14 +3,15 @@ import './Post.css'
 import {Avatar} from "@material-ui/core";
 import InputOption from "../inputOption/InputOption";
 import {CommentOutlined, SendOutlined, ShareOutlined, ThumbUpAltOutlined} from "@material-ui/icons";
-import colors from '../../../../../src/configs/colors.json'
+import colors from '../../../../assets/colors.json'
 
 function Post({name, description, message, photoUrl}) {
+
     return (
         <div className={'post'}>
 
             <div className={'post__header'}>
-                <Avatar/>
+                <Avatar src={photoUrl}>{name[0]}</Avatar>
                 <div className={'post__info'}>
                     <h2>{name}</h2>
                     <p>{description}</p>

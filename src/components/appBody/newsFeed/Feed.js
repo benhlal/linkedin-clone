@@ -3,12 +3,14 @@ import './Feed.css';
 import CreateIcon from '@material-ui/icons/Create';
 import InputOption from "./inputOption/InputOption";
 import {CalendarViewDayOutlined, SubscriptionsOutlined} from "@material-ui/icons";
-import colors from '../../../../src/configs/colors.json'
+import colors from '../../../assets/colors.json'
 import SubscriptionsIcon from '@material-ui/icons/Subscriptions';
 import ImageIcon from '@material-ui/icons/Image';
 import Post from "./posts/Post";
 import {db} from "../../../firebase";
 import firebase from "firebase";
+import {useSelector} from "react-redux";
+import {selectUser} from "../../../features/userSlice";
 
 
 function Feed(props) {
@@ -16,6 +18,8 @@ function Feed(props) {
     const colorObject = colors.postsIconsColors;
     const [input, setInput] = useState('');
     const [posts, setPosts] = useState([]);
+    const user = useSelector(selectUser);
+    console.log("POT USER", user)
 
 
     useEffect(() => {
@@ -37,10 +41,10 @@ function Feed(props) {
         e.preventDefault();
         db.collection('posts').add(
             {
-                name: 'BENHLAL Yassine',
-                description: 'This is a clone',
+                name: user.displayName,
+                description: user.email,
                 message: input,
-                photoUrl: '',
+                photoUrl: user.photoUrl || "",
                 timeStamp: firebase.firestore.FieldValue.serverTimestamp()
             }
         ).then(r => (''))
